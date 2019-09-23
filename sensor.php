@@ -10,8 +10,10 @@ if (isset($_GET['park']))
        if ($item->park_name == $park)
        { 
         echo json_encode($item);
+        break;
        }
     }
+    echo "nothing found"
 }
 else
 {
