@@ -14,6 +14,7 @@ def createjson():
     #time_run = time_run.isoformat()
     time_run = time_run.strftime('%d %b %Y, %-I:%M %p')
     url = "https://wollongong.nsw.gov.au/explore/sport-and-recreation/sportsgrounds"
+    print(url)
     f = urllib.urlopen(url)
     html = f.read()
     parsed_html = BeautifulSoup(html, "lxml")
