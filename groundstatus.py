@@ -23,7 +23,7 @@ def createjson():
     #print(tags)
     for t in tags:
         park_name = t.findAll("div", class_="sportsgrounds__name")[0].text
-        park_status = t.findAll("div", class_="sportsgrounds__status")[1].text
+        park_status = t.findAll("div", class_="sportsgrounds__status")[0].text
         park_comment = t.findAll("div", class_="sportsgrounds__more-info")[0].text      
         park = {'park_name': park_name.encode('utf-8'), 'park_status': park_status.encode('utf-8'), 'park_comment': park_comment.encode('utf-8'), 'updated' : time_run}
         print(park)
