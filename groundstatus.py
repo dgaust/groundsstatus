@@ -22,7 +22,7 @@ def createjson():
     tags = parsed_html.findAll("div", class_="sportsgrounds__item")
     #print(tags)
     for t in tags:
-        park_name = t.findAll("div", class_="sportsgrounds__name").text
+        park_name = t.findAll("div", class_="sportsgrounds__name")[0].text
         #park_status = t[1].text
         #print(t)
         print(park_name)
