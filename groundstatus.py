@@ -21,7 +21,12 @@ def createjson():
     groundlist = []
     
     tags = parsed_html.findAll("div", class_="sportsgrounds__item")
-    print(tags)
+    #print(tags)
+    for t in tags:
+        park_name = t[0].text
+        #park_status = t[1].text
+        print(t)
+        print(park_name)
     
    # li = parsed_html.find('table', {'summary': 'SportsGrounds '})
    # for table_row in li:
