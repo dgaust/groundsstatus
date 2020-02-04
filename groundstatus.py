@@ -39,7 +39,7 @@ def createjson():
     ftpupload()
 def ftpupload():
     try:
-       session = ftplib.FTP('ftp.russellvalefootball.com', 'dgaust@russellvalefootball.com', 'Zcl217Asia2002')
+       session = ftplib.FTP('ftp.russellvalefootball.com', 'user', 'pass')
        file = open('test.json', 'rb')
        session.storbinary('STOR /public_html/test.json', file)
        file.close()
