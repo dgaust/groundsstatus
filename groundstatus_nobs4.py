@@ -2,10 +2,42 @@
 
 from lxml import html
 import requests
+import json
+import ftplib
+import datetime
 
-page = requests.get('https://www.wollongong.nsw.gov.au/explore/sport-and-recreation/sportsgrounds')
-tree = html.fromstring(page.content)
-print 'Tree:', tree
-grounds = buyers = tree.xpath('//div[@title="portsgrounds__item"]/text()')
+def createjson():
+   time_run = datetime.datetime.now()
+   time_run = time_run.strftime('%d %b %Y, %-I:%M %p')
+   groundlist = []
 
-print 'Grounds: ', grounds
+   page = requests.get('https://www.wollongong.nsw.gov.au/explore/sport-and-recreation/sportsgrounds')
+   tree = html.fromstring(page.content)
+   allgroundnames = tree.xpath('//div[@class="sportsgrounds__info"]')
+   i = 0
+   for item in allgroundnames:
+       grounds = item.xpath('//div[@class="sportsgrounds__name"]/a/text()')
+       status = item.xpath('//div[@class="sportsgrounds__status"]/span[2]/text()')
+       park_name = grounds[i].split(',')[0]
+       park_status = status[i]
+       park_comment = 'no comment'
+       park = {'park_name': park_name, 'park_status': park_status, 'park_comment': park_comment, 'updated' : time_run}
+       groundlist.append(park)
+       i = i + 1
+
+   with open('test.json', 'wb') as outfile:
+        json.dump(groundlist, outfile)
+
+   ftpupload()
+
+def ftpupload():
+    try:
+       session = ftplib.FTP('ftp.russellvalefootball.com', 'user', 'pass')
+       file = open('test.json', 'rb')
+       session.storbinary('STOR /public_html/test.json', file)
+       file.close()
+       session.quit()
+    except:
+       print('ftp error')
+
+createjson()
