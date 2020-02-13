@@ -115,7 +115,7 @@ function custom_widget_control()
    echo '<p> <label for="custom_widget_title">Display Name:<br /> <i>This will be the name shown on the site.</i><br/> <input id="custom_widget_title" name="custom_widget_title" type="text" value="'; 
    echo $custom_widget_options['groundname']; 
    echo '"/> </label> </p>';  
-   echo '<p> <label for="custom_widget_text">Enter the <b>exact</b> name of the ground as provided on the Wollongong Sportsground <a href="http://www.wollongong.nsw.gov.au/facilities/sportrec/Pages/sportsgrounds.aspx" target="_blank">website.</a><br/> <i>The exact name must be used to ensure a match.</i><br/> <textarea rows=5 cols=25 id="custom_widget_text" name="custom_widget_text">'; 
+   echo '<p> <label for="custom_widget_text">Enter the <b>exact</b> name of the ground (not including the suburb) as provided on the Wollongong Sportsground <a href="https://wollongong.nsw.gov.au/explore/sport-and-recreation/sportsgrounds" target="_blank">website.</a><br/> <i>The exact name must be used to ensure a match with the park name only (i.e. without the suburb).</i><br/> <textarea rows=5 cols=25 id="custom_widget_text" name="custom_widget_text">'; 
    echo $custom_widget_options['groundtitle'];       
    echo '</textarea> </label> </p>';
 } 
