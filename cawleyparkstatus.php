@@ -74,8 +74,10 @@ function getGroundStatus($args)
               echo '<div class="sp-widget-align-none"> <aside id="sportspress-countdown-4" class="widget widget_sportspress widget_countdown widget_sp_countdown"> <h3>';
               echo $custom_widget_options['groundname'];
               echo '</h3> <img style="width:100%; height:100%" src="https://russellvalefootball.com/wp-content/uploads/2016/04/Ground-2.png"/> <p class="widget-smalltext" color="black">Last Updated: ';
-              echo $item->updated;
-              echo '</p> <a class="sp-view-all-link" href="http://www.wollongong.nsw.gov.au/facilities/sportrec/Pages/sportsgrounds.aspx" target="_blank">Other council grounds</a> </aside> </div>';
+			  echo $item->updated;
+			  echo '<br/>Council says: ';
+			  echo $item->park_comment;
+			  echo '</p> <a class="sp-view-all-link" href="http://www.wollongong.nsw.gov.au/facilities/sportrec/Pages/sportsgrounds.aspx" target="_blank">Other council grounds</a> </p> </aside> </div>';
           }
        }
   }
