@@ -20,7 +20,7 @@ def createjson():
    if countofitems != 0: 
       comment = alertstatus[0]
       if countofitems > 2
-         comment = comment + " " + alertstatus[1]
+         comment = comment + "<br/>" + alertstatus[1]
    else:
       comment = 'No comments'
    
