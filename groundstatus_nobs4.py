@@ -16,8 +16,11 @@ def createjson():
    allgroundnames = tree.xpath('//div[@class="sportsgrounds__info"]')
    
    alertstatus = tree.xpath('//div[@class="alert__message"]/text()')
-   if len(alertstatus) != 0: 
-      comment = alertstatus
+   countofitems = len(alertstatus)
+   if countofitems != 0: 
+      comment = alertstatus[0]
+      if countofitems > 2
+         comment = comment + " " + alertstatus[1]
    else:
       comment = 'No comments'
    
