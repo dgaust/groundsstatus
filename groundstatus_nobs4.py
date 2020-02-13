@@ -14,6 +14,10 @@ def createjson():
    page = requests.get('https://www.wollongong.nsw.gov.au/explore/sport-and-recreation/sportsgrounds')
    tree = html.fromstring(page.content)
    allgroundnames = tree.xpath('//div[@class="sportsgrounds__info"]')
+   
+   alertstatus = tree.xpath('//div[@class="alert__message"]/text()')
+   print alertstatus
+   
    i = 0
    for item in allgroundnames:
        grounds = item.xpath('//div[@class="sportsgrounds__name"]/a/text()')
