@@ -16,7 +16,10 @@ def createjson():
    allgroundnames = tree.xpath('//div[@class="sportsgrounds__info"]')
    
    alertstatus = tree.xpath('//div[@class="alert__message"]/text()')
-   print alertstatus
+   if len(alertstatus) != 0: 
+      comment = alertstatus
+   else:
+      comment = 'No comments'
    
    i = 0
    for item in allgroundnames:
@@ -24,7 +27,7 @@ def createjson():
        status = item.xpath('//div[@class="sportsgrounds__status"]/span[2]/text()')
        park_name = grounds[i].split(',')[0]
        park_status = status[i]
-       park_comment = 'no comment'
+       park_comment = comment
        park = {'park_name': park_name, 'park_status': park_status, 'park_comment': park_comment, 'updated' : time_run}
        groundlist.append(park)
        i = i + 1
