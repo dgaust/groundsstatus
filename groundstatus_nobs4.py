@@ -19,7 +19,7 @@ def createjson():
    countofitems = len(alertstatus)
    if countofitems != 0: 
       comment = alertstatus[0]
-      if countofitems > 2
+      if countofitems > 2:
          comment = comment + "<br/>" + alertstatus[1]
    else:
       comment = 'No comments'
@@ -35,7 +35,7 @@ def createjson():
        groundlist.append(park)
        i = i + 1
 
-   with open('test.json', 'wb') as outfile:
+   with open('test.json', 'w') as outfile:
         json.dump(groundlist, outfile)
 
    ftpupload()
