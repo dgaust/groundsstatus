@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Wollongong Sportsground Status
  * Plugin URI:        https://github.com/dgaust/groundsstatus
- * Description:       Show the current open/closed status of a Wollongong City Council sportsground with the [sportsground_status] shortcode. Status is fetched live from Council and cached.
- * Version:           2.0.1
+ * Description:       Show the current open/closed status of a Wollongong City Council sportsground with the [sportsground_status] shortcode or the Sportsground Status widget. Status is fetched live from Council and cached.
+ * Version:           2.1.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            dgaust
@@ -34,7 +34,7 @@ final class WSG_Sportsground_Status {
 	const CACHE_TTL    = 15 * MINUTE_IN_SECONDS;
 	const DETAIL_TTL   = 15 * MINUTE_IN_SECONDS;
 	const STYLE_HANDLE = 'wollongong-sportsground-status';
-	const VERSION      = '2.0.1';
+	const VERSION      = '2.1.0';
 	const USER_AGENT   = 'WollongongSportsgroundStatus/2.0 (+https://github.com/dgaust/groundsstatus)';
 
 	/**
@@ -55,11 +55,29 @@ final class WSG_Sportsground_Status {
 	}
 
 	/**
-	 * Hook up the shortcode and assets.
+	 * Hook up the shortcode, widget and assets.
 	 */
 	private function __construct() {
 		add_action( 'init', array( $this, 'register_assets' ) );
+		add_action( 'widgets_init', array( $this, 'register_widgets' ) );
 		add_shortcode( 'sportsground_status', array( $this, 'render_shortcode' ) );
+	}
+
+	/**
+	 * Register the Sportsground Status widget.
+	 */
+	public function register_widgets() {
+		register_widget( 'WSG_Sportsground_Widget' );
+	}
+
+	/**
+	 * Public list of grounds, for building UI such as the widget dropdown.
+	 *
+	 * @return array List of ground arrays (slug, name, status, url); empty on error.
+	 */
+	public function get_ground_options() {
+		$grounds = $this->get_grounds();
+		return is_wp_error( $grounds ) ? array() : $grounds;
 	}
 
 	/**
@@ -360,6 +378,162 @@ final class WSG_Sportsground_Status {
 .wsg-link{display:inline-block;margin-top:.5em;font-size:.85em}
 .wsg-notice{opacity:.8}
 ';
+	}
+}
+
+/**
+ * Sportsground Status widget.
+ *
+ * A classic WP_Widget so the status can be dropped into any widget area (and,
+ * on block-based themes, via the "Legacy Widget" block). The settings form
+ * offers a live dropdown of grounds. Rendering and caching are shared with the
+ * shortcode via WSG_Sportsground_Status::render_shortcode().
+ */
+class WSG_Sportsground_Widget extends WP_Widget {
+
+	/**
+	 * Register the widget with its name and description.
+	 */
+	public function __construct() {
+		parent::__construct(
+			'wsg_sportsground_status',
+			__( 'Sportsground Status', 'wollongong-sportsground-status' ),
+			array(
+				'description' => __( 'Show whether a Wollongong sportsground is open or closed.', 'wollongong-sportsground-status' ),
+				'classname'   => 'wsg-widget',
+			)
+		);
+	}
+
+	/**
+	 * Front-end output.
+	 *
+	 * @param array $args     Theme widget wrappers.
+	 * @param array $instance Saved settings.
+	 */
+	public function widget( $args, $instance ) {
+		$ground = isset( $instance['ground'] ) ? trim( (string) $instance['ground'] ) : '';
+		if ( '' === $ground ) {
+			return;
+		}
+
+		$card = WSG_Sportsground_Status::instance()->render_shortcode(
+			array(
+				'ground'       => $ground,
+				'name'         => isset( $instance['name'] ) ? $instance['name'] : '',
+				'show_updated' => empty( $instance['show_updated'] ) ? 'no' : 'yes',
+				'link'         => empty( $instance['link'] ) ? 'no' : 'yes',
+			)
+		);
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Theme-provided wrapper markup.
+		echo $args['before_widget'];
+
+		$title = apply_filters(
+			'widget_title',
+			isset( $instance['title'] ) ? $instance['title'] : '',
+			$instance,
+			$this->id_base
+		);
+		if ( '' !== $title ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Theme wrapper markup around an escaped title.
+			echo $args['before_title'] . esc_html( $title ) . $args['after_title'];
+		}
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Card HTML is already built from esc_html()/esc_attr()/esc_url().
+		echo $card;
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Theme-provided wrapper markup.
+		echo $args['after_widget'];
+	}
+
+	/**
+	 * Sanitise settings on save.
+	 *
+	 * @param array $new_instance Submitted values.
+	 * @param array $old_instance Previous values.
+	 * @return array
+	 */
+	public function update( $new_instance, $old_instance ) {
+		return array(
+			'title'        => isset( $new_instance['title'] ) ? sanitize_text_field( $new_instance['title'] ) : '',
+			'ground'       => isset( $new_instance['ground'] ) ? sanitize_text_field( $new_instance['ground'] ) : '',
+			'name'         => isset( $new_instance['name'] ) ? sanitize_text_field( $new_instance['name'] ) : '',
+			'show_updated' => empty( $new_instance['show_updated'] ) ? 0 : 1,
+			'link'         => empty( $new_instance['link'] ) ? 0 : 1,
+		);
+	}
+
+	/**
+	 * Settings form shown in the admin.
+	 *
+	 * @param array $instance Saved settings.
+	 */
+	public function form( $instance ) {
+		$title        = isset( $instance['title'] ) ? (string) $instance['title'] : '';
+		$ground       = isset( $instance['ground'] ) ? (string) $instance['ground'] : '';
+		$name         = isset( $instance['name'] ) ? (string) $instance['name'] : '';
+		// New widgets default the toggles on.
+		$show_updated = ! isset( $instance['show_updated'] ) || $instance['show_updated'];
+		$link         = ! isset( $instance['link'] ) || $instance['link'];
+
+		$grounds     = WSG_Sportsground_Status::instance()->get_ground_options();
+		$known_slugs = wp_list_pluck( $grounds, 'slug' );
+		?>
+		<p>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_html_e( 'Title:', 'wollongong-sportsground-status' ); ?></label>
+			<input class="widefat" type="text"
+				id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
+				name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>"
+				value="<?php echo esc_attr( $title ); ?>" />
+		</p>
+		<p>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'ground' ) ); ?>"><?php esc_html_e( 'Sportsground:', 'wollongong-sportsground-status' ); ?></label>
+			<?php if ( ! empty( $grounds ) ) : ?>
+				<select class="widefat"
+					id="<?php echo esc_attr( $this->get_field_id( 'ground' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name( 'ground' ) ); ?>">
+					<option value=""><?php esc_html_e( '— Select a ground —', 'wollongong-sportsground-status' ); ?></option>
+					<?php foreach ( $grounds as $g ) : ?>
+						<option value="<?php echo esc_attr( $g['slug'] ); ?>" <?php selected( $ground, $g['slug'] ); ?>>
+							<?php echo esc_html( $g['name'] ); ?>
+						</option>
+					<?php endforeach; ?>
+					<?php if ( '' !== $ground && ! in_array( $ground, $known_slugs, true ) ) : ?>
+						<option value="<?php echo esc_attr( $ground ); ?>" selected>
+							<?php echo esc_html( $ground ); ?>
+						</option>
+					<?php endif; ?>
+				</select>
+			<?php else : ?>
+				<input class="widefat" type="text"
+					id="<?php echo esc_attr( $this->get_field_id( 'ground' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name( 'ground' ) ); ?>"
+					value="<?php echo esc_attr( $ground ); ?>"
+					placeholder="<?php esc_attr_e( 'e.g. Cawley Park or cawley-park', 'wollongong-sportsground-status' ); ?>" />
+				<small><?php esc_html_e( 'Could not load the ground list right now — enter the ground name or slug.', 'wollongong-sportsground-status' ); ?></small>
+			<?php endif; ?>
+		</p>
+		<p>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'name' ) ); ?>"><?php esc_html_e( 'Heading override (optional):', 'wollongong-sportsground-status' ); ?></label>
+			<input class="widefat" type="text"
+				id="<?php echo esc_attr( $this->get_field_id( 'name' ) ); ?>"
+				name="<?php echo esc_attr( $this->get_field_name( 'name' ) ); ?>"
+				value="<?php echo esc_attr( $name ); ?>" />
+		</p>
+		<p>
+			<input type="checkbox" value="1" <?php checked( $show_updated ); ?>
+				id="<?php echo esc_attr( $this->get_field_id( 'show_updated' ) ); ?>"
+				name="<?php echo esc_attr( $this->get_field_name( 'show_updated' ) ); ?>" />
+			<label for="<?php echo esc_attr( $this->get_field_id( 'show_updated' ) ); ?>"><?php esc_html_e( 'Show "Status last changed" time', 'wollongong-sportsground-status' ); ?></label>
+		</p>
+		<p>
+			<input type="checkbox" value="1" <?php checked( $link ); ?>
+				id="<?php echo esc_attr( $this->get_field_id( 'link' ) ); ?>"
+				name="<?php echo esc_attr( $this->get_field_name( 'link' ) ); ?>" />
+			<label for="<?php echo esc_attr( $this->get_field_id( 'link' ) ); ?>"><?php esc_html_e( 'Show link to Council page', 'wollongong-sportsground-status' ); ?></label>
+		</p>
+		<?php
 	}
 }
 

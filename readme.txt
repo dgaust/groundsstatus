@@ -4,24 +4,32 @@ Tags: sportsground, wollongong, status, shortcode, sport
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.0.1
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Show the current open/closed status of a Wollongong City Council sportsground with a simple shortcode.
+Show the current open/closed status of a Wollongong City Council sportsground with a shortcode or widget.
 
 == Description ==
 
 Wollongong Sportsground Status displays whether a Wollongong City Council
-sportsground is currently open or closed. Drop a shortcode into any post, page
-or block widget area:
+sportsground is currently open or closed. Use it two ways:
 
-`[sportsground_status ground="Cawley Park"]`
+* **Shortcode** — drop `[sportsground_status ground="Cawley Park"]` into any
+  post, page or block widget area.
+* **Widget** — add the **Sportsground Status** widget to any widget area and
+  pick a ground from the dropdown.
 
 The status is fetched live from Council's public sportsgrounds page and cached
 for 15 minutes, so pages stay fast and Council's server isn't hammered. No
 external scraper, FTP upload or hosted JSON file is required — the plugin is
 fully self-contained.
+
+= Widget =
+
+Go to Appearance → Widgets, add **Sportsground Status**, choose a ground from
+the dropdown (populated live from Council), optionally set a title, a heading
+override, and whether to show the "last changed" time and Council link.
 
 = Shortcode attributes =
 
@@ -43,8 +51,8 @@ fully self-contained.
 1. Upload the plugin folder to `/wp-content/plugins/`, or install the ZIP via
    Plugins → Add New → Upload Plugin.
 2. Activate the plugin through the Plugins menu in WordPress.
-3. Add `[sportsground_status ground="Your Ground"]` to a post, page or a
-   Shortcode block in a widget area.
+3. Add `[sportsground_status ground="Your Ground"]` to a post/page, or add the
+   **Sportsground Status** widget under Appearance → Widgets.
 
 == Frequently Asked Questions ==
 
@@ -60,10 +68,15 @@ minutes.
 
 = How do I place it in a sidebar/widget area? =
 
-Add a "Shortcode" block (or the legacy Text/Shortcode widget) to the widget area
-and paste the shortcode.
+Either add the **Sportsground Status** widget (Appearance → Widgets) and pick a
+ground, or add a "Shortcode" block to the widget area and paste the shortcode.
 
 == Changelog ==
+
+= 2.1.0 =
+* Added the **Sportsground Status** widget with a live ground picker, so you can
+  place a ground's status in any widget area without the shortcode.
+* The widget shares the shortcode's rendering and caching.
 
 = 2.0.1 =
 * Compliance and tooling: WordPress Plugin Check clean; bumped "Tested up to";

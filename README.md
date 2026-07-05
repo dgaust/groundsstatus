@@ -2,11 +2,14 @@
 
 A WordPress plugin that shows the current **open/closed** status of a
 [Wollongong City Council sportsground](https://wollongong.nsw.gov.au/places/sport-and-fitness/sportsgrounds)
-via a shortcode.
+via a **shortcode** or a **widget**.
 
 ```text
 [sportsground_status ground="Cawley Park"]
 ```
+
+Or add the **Sportsground Status** widget (Appearance → Widgets) and pick a
+ground from the dropdown.
 
 The plugin fetches Council's public page directly (WordPress HTTP API), parses
 it, and caches the result in a transient for 15 minutes. It is fully
@@ -39,6 +42,17 @@ Examples:
 [sportsground_status ground="cawley-park"]
 [sportsground_status ground="Cawley Park" name="Our Home Ground" link="no"]
 ```
+
+## Widget
+
+Add the **Sportsground Status** widget under *Appearance → Widgets* (or, on
+block themes, via the *Legacy Widget* block). Its settings form has:
+
+- a **ground dropdown** populated live from Council,
+- an optional **title** and **heading override**, and
+- toggles for the **"last changed"** time and the **Council link**.
+
+The widget renders the same card as the shortcode and shares its caching.
 
 ## How it works
 
