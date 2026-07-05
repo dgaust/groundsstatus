@@ -4,7 +4,7 @@ Tags: sportsground, wollongong, status, shortcode, sport
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -64,6 +64,10 @@ Add a "Shortcode" block (or the legacy Text/Shortcode widget) to the widget area
 and paste the shortcode.
 
 == Changelog ==
+
+= 2.0.1 =
+* Compliance and tooling: WordPress Plugin Check clean; bumped "Tested up to";
+  added a CI workflow (PHP lint 7.4–8.4 + Plugin Check). No functional changes.
 
 = 2.0.0 =
 * Complete rewrite for modern WordPress.
