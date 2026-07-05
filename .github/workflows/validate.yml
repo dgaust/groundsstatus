@@ -40,4 +40,8 @@ jobs:
         uses: WordPress/plugin-check-action@v1
         with:
           build-dir: "./"
+          # The repo is named "groundsstatus" but the plugin's real slug (and
+          # the folder it installs into) is wollongong-sportsground-status.
+          slug: "wollongong-sportsground-status"
           exclude-directories: ".github"
+          exclude-files: ".gitignore"
