@@ -34,8 +34,10 @@ final class WSG_Sportsground_Status {
 	const CACHE_TTL    = 15 * MINUTE_IN_SECONDS;
 	const DETAIL_TTL   = 15 * MINUTE_IN_SECONDS;
 	const STYLE_HANDLE = 'wollongong-sportsground-status';
-	const VERSION      = '2.1.0';
-	const USER_AGENT   = 'WollongongSportsgroundStatus/2.0 (+https://github.com/dgaust/groundsstatus)';
+	const VERSION      = '2.1.1';
+	// The council site returns 403 to non-browser clients, so present as a
+	// current desktop Chrome (see fetch() for the accompanying headers).
+	const USER_AGENT   = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
 
 	/**
 	 * Singleton instance.
@@ -270,7 +272,20 @@ final class WSG_Sportsground_Status {
 			array(
 				'timeout'    => 15,
 				'user-agent' => self::USER_AGENT,
-				'headers'    => array( 'Accept' => 'text/html' ),
+				// A full, self-consistent Chrome header set so the request is
+				// indistinguishable from a normal browser (avoids HTTP 403).
+				'headers'    => array(
+					'Accept'                    => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+					'Accept-Language'           => 'en-AU,en;q=0.9',
+					'Upgrade-Insecure-Requests' => '1',
+					'Sec-Fetch-Dest'            => 'document',
+					'Sec-Fetch-Mode'            => 'navigate',
+					'Sec-Fetch-Site'            => 'none',
+					'Sec-Fetch-User'            => '?1',
+					'sec-ch-ua'                 => '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+					'sec-ch-ua-mobile'          => '?0',
+					'sec-ch-ua-platform'        => '"Windows"',
+				),
 			)
 		);
 

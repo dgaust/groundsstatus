@@ -4,7 +4,7 @@ Tags: sportsground, wollongong, status, shortcode, sport
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.1.0
+Stable tag: 2.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,10 @@ Either add the **Sportsground Status** widget (Appearance → Widgets) and pick 
 ground, or add a "Shortcode" block to the widget area and paste the shortcode.
 
 == Changelog ==
+
+= 2.1.1 =
+* Fetch the council page with modern-browser request headers, so it isn't
+  blocked (HTTP 403) as a non-browser client.
 
 = 2.1.0 =
 * Added the **Sportsground Status** widget with a live ground picker, so you can
