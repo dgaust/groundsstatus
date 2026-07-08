@@ -3,7 +3,7 @@
  * Plugin Name:       Wollongong Sportsground Status
  * Plugin URI:        https://github.com/dgaust/groundsstatus
  * Description:       Show the current open/closed status of a Wollongong City Council sportsground with the [sportsground_status] shortcode or the Sportsground Status widget. Status is fetched live from Council and cached.
- * Version:           2.1.0
+ * Version:           2.1.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            dgaust
